@@ -12,17 +12,17 @@ import { whatWeLookForInFounders } from "@/data/essays/what-we-look-for-in-found
 import { Essay } from "./types";
 
 export const essays: Essay[] = [
+    beingExtraordinary,
+    thingsTakeTime,
+    defaultAliveOrDefaultDead,
+    beforeTheStartup,
     doThingsThatDontScale,
     startupEqualsGrowth,
-    defaultAliveOrDefaultDead,
+    aWordToTheResourceful,
+    whatWeLookForInFounders,
+    theTopIdeaInYourMind,
     ramenProfitable,
     the18MistakesThatKillStartups,
-    beforeTheStartup,
-    whatWeLookForInFounders,
-    aWordToTheResourceful,
-    theTopIdeaInYourMind,
-    thingsTakeTime,
-    beingExtraordinary,
 ];
 
 export function getEssayBySlug(slug: string): Essay | undefined {
