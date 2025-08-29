@@ -8,58 +8,22 @@ import { Essay } from '@/lib/types'
 
 type FilterType = 'all' | 'translated' | 'korean-only'
 
-// Fisher-Yates shuffle algorithm
-function shuffleArray<T>(array: T[]): T[] {
-  const shuffled = [...array]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-  return shuffled
-}
-
 export default function HomePage() {
   const searchParams = useSearchParams()
   const initialFilter = (searchParams.get('filter') as FilterType) || 'all'
   const [filter, setFilter] = useState<FilterType>(initialFilter)
   const [searchQuery, setSearchQuery] = useState('')
-  const [shuffledEssays, setShuffledEssays] = useState<Essay[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Initial shuffle on component mount and filter change
-  useEffect(() => {
-    let essays: Essay[] = []
-    
-    switch (filter) {
-      case 'translated':
-        essays = getTranslatedEssays()
-        break
-      case 'korean-only':
-        essays = getKoreanOnlyEssays()
-        break
-      default:
-        essays = getAllEssays()
-    }
-    
-    // Shuffle essays when no search query
-    if (!searchQuery) {
-      setShuffledEssays(shuffleArray(essays))
-    } else {
-      // Don't shuffle search results to maintain relevance
-      setShuffledEssays(essays)
-    }
-    setIsLoading(false)
-  }, [filter])
 
   useEffect(() => {
     const filterParam = searchParams.get('filter') as FilterType
     if (filterParam && ['all', 'translated', 'korean-only'].includes(filterParam)) {
       setFilter(filterParam)
+    } else if (!filterParam) {
+      setFilter('all')
     }
   }, [searchParams])
 
-  // Handle search without shuffling
-  useEffect(() => {
+  const getFilteredEssays = (): Essay[] => {
     let essays: Essay[] = []
     
     switch (filter) {
@@ -74,7 +38,6 @@ export default function HomePage() {
     }
 
     if (searchQuery) {
-      // Filter based on search query without shuffling
       essays = essays.filter(essay => {
         const searchLower = searchQuery.toLowerCase()
         const title = essay.type === 'translated' 
@@ -82,14 +45,12 @@ export default function HomePage() {
           : essay.title.toLowerCase()
         return title.includes(searchLower)
       })
-      setShuffledEssays(essays)
-    } else {
-      // Shuffle when search is cleared
-      setShuffledEssays(shuffleArray(essays))
     }
-  }, [searchQuery, filter])
 
-  const essays = shuffledEssays
+    return essays
+  }
+
+  const essays = getFilteredEssays()
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -101,40 +62,7 @@ export default function HomePage() {
           <p className="text-gray-400">스타트업과 창업에 대한 통찰</p>
         </header>
 
-        <div className="mb-8 space-y-4">
-          <div className="flex gap-2 justify-center flex-wrap">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              전체
-            </button>
-            <button
-              onClick={() => setFilter('translated')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'translated'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              번역 에세이
-            </button>
-            <button
-              onClick={() => setFilter('korean-only')}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'korean-only'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              한글 에세이
-            </button>
-          </div>
-
+        <div className="mb-8">
           <div className="relative">
             <input
               type="text"
@@ -204,7 +132,7 @@ export default function HomePage() {
           ))}
         </div>
 
-        {!isLoading && essays.length === 0 && searchQuery && (
+        {essays.length === 0 && searchQuery && (
           <div className="text-center py-12 text-gray-500">
             검색 결과가 없습니다.
           </div>

@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function Navigation() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const searchParams = useSearchParams();
+    const currentFilter = searchParams.get("filter") || "all";
 
     return (
         <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
@@ -20,20 +23,32 @@ export default function Navigation() {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center gap-6">
                         <Link
-                            href="/"
-                            className="text-gray-300 hover:text-white transition-colors"
+                            href="/?filter=all"
+                            className={`px-3 py-1 rounded-md transition-all ${
+                                currentFilter === "all"
+                                    ? "text-white bg-blue-600/20 border-b-2 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             모든 에세이
                         </Link>
                         <Link
                             href="/?filter=translated"
-                            className="text-gray-300 hover:text-white transition-colors"
+                            className={`px-3 py-1 rounded-md transition-all ${
+                                currentFilter === "translated"
+                                    ? "text-white bg-blue-600/20 border-b-2 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             번역 에세이
                         </Link>
                         <Link
                             href="/?filter=korean-only"
-                            className="text-gray-300 hover:text-white transition-colors"
+                            className={`px-3 py-1 rounded-md transition-all ${
+                                currentFilter === "korean-only"
+                                    ? "text-white bg-blue-600/20 border-b-2 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             한글 에세이
                         </Link>
@@ -73,23 +88,35 @@ export default function Navigation() {
                 {isMenuOpen && (
                     <div className="md:hidden pb-4 space-y-2">
                         <Link
-                            href="/"
+                            href="/?filter=all"
                             onClick={() => setIsMenuOpen(false)}
-                            className="block text-gray-300 hover:text-white transition-colors py-2"
+                            className={`block px-3 py-2 rounded-md transition-all ${
+                                currentFilter === "all"
+                                    ? "text-white bg-blue-600/20 border-l-4 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             모든 에세이
                         </Link>
                         <Link
                             href="/?filter=translated"
                             onClick={() => setIsMenuOpen(false)}
-                            className="block text-gray-300 hover:text-white transition-colors py-2"
+                            className={`block px-3 py-2 rounded-md transition-all ${
+                                currentFilter === "translated"
+                                    ? "text-white bg-blue-600/20 border-l-4 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             번역 에세이
                         </Link>
                         <Link
                             href="/?filter=korean-only"
                             onClick={() => setIsMenuOpen(false)}
-                            className="block text-gray-300 hover:text-white transition-colors py-2"
+                            className={`block px-3 py-2 rounded-md transition-all ${
+                                currentFilter === "korean-only"
+                                    ? "text-white bg-blue-600/20 border-l-4 border-blue-400"
+                                    : "text-gray-300 hover:text-white"
+                            }`}
                         >
                             한글 에세이
                         </Link>
