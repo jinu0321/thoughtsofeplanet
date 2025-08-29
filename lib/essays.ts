@@ -1,5 +1,6 @@
 import { aWordToTheResourceful } from "@/data/essays/a-word-to-the-resourceful";
 import { beforeTheStartup } from "@/data/essays/before-the-startup";
+import { beingExtraordinary } from "@/data/essays/being-extraordinary";
 import { defaultAliveOrDefaultDead } from "@/data/essays/default-alive-or-default-dead";
 import { doThingsThatDontScale } from "@/data/essays/do-things-that-dont-scale";
 import { ramenProfitable } from "@/data/essays/ramen-profitable";
@@ -21,6 +22,7 @@ export const essays: Essay[] = [
     aWordToTheResourceful,
     theTopIdeaInYourMind,
     thingsTakeTime,
+    beingExtraordinary,
 ];
 
 export function getEssayBySlug(slug: string): Essay | undefined {
