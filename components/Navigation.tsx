@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Navigation() {
+function NavigationContent() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const searchParams = useSearchParams();
     const currentFilter = searchParams.get("filter") || "all";
@@ -124,5 +124,41 @@ export default function Navigation() {
                 )}
             </div>
         </nav>
+    );
+}
+
+function NavigationFallback() {
+    return (
+        <nav className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
+            <div className="max-w-6xl mx-auto px-4">
+                <div className="flex items-center justify-between h-16">
+                    <Link
+                        href="/"
+                        className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent hover:from-blue-300 hover:to-cyan-300 transition-all"
+                    >
+                        스타트업과 창업에 대한 통찰
+                    </Link>
+                    <div className="hidden md:flex items-center gap-6">
+                        <Link href="/?filter=all" className="text-gray-300 hover:text-white transition-colors">
+                            모든 에세이
+                        </Link>
+                        <Link href="/?filter=translated" className="text-gray-300 hover:text-white transition-colors">
+                            번역 에세이
+                        </Link>
+                        <Link href="/?filter=korean-only" className="text-gray-300 hover:text-white transition-colors">
+                            한글 에세이
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    );
+}
+
+export default function Navigation() {
+    return (
+        <Suspense fallback={<NavigationFallback />}>
+            <NavigationContent />
+        </Suspense>
     );
 }
